@@ -1,5 +1,25 @@
-# msml641-nlp-project
+# MSML 641 NLP Project
+
 Repository for the MSML 641 Natural Language Processing course Project - Fall 2025
+
+## Table of Contents
+
+- [Students](#students)
+- [Proposals](#proposals)
+  - [1 - A/B Testing performance improvement based on NLP Techniques (A case for Upworthy Research Archive)](#1---ab-testing-performance-improvement-based-on-nlp-techniques-a-case-for-upworthy-research-archive)
+    - [About the dataset](#about-the-dataset)
+    - [About Upworthy](#about-upworthy)
+  - [2 - Compare and Improve Evaluation Metrics for Agentic Answers Evaluation (Discarded)](#2---compare-and-improve-evaluation-metrics-for-agentic-answers-evaluation-discarded)
+- [Literature Review](#literature-review)
+  - [1 - Nate Matias Meta Analysis (2020)](#1---nate-matias-meta-analysis-2020)
+  - [2 - Negativity drives online news consumption (2023)](#2---negativity-drives-online-news-consumption-2023)
+  - [3 - Linguistic effects on news headline success: Evidence from thousands of online field experiments (2023)](#3---linguistic-effects-on-news-headline-success-evidence-from-thousands-of-online-field-experiments-2023)
+  - [4 - Reading dies in complexity: Online news consumers prefer simple writing](#4---reading-dies-in-complexity-online-news-consumers-prefer-simple-writing)
+  - [5 - Replacing an A/B Test with GPT (2023)](#5---replacing-an-ab-test-with-gpt-2023)
+  - [Headline sentiment and topic effect on online user engagement (2021)](#headline-sentiment-and-topic-effect-on-online-user-engagement-2021)
+  - [6 - Hypothesis Generation with Large Language Models (2024)](#6---hypothesis-generation-with-large-language-models-2024)
+  - [7 - LOLA: LLM-Assisted Online Learning Algorithm (2024)](#7---lola-llm-assisted-online-learning-algorithm-2024)
+
 
 ## Students
 
@@ -79,7 +99,7 @@ Potential goals:
 - Compare the performance between different NLP techniques (Without LLM as a Judge) to evaluate Retrieval-Augmented Generation (RAG) accuracy by comparing the original data source with the answers provided by the agents.
 - Propose an evaluation framework based on the user pre-definition of expected answers and the calculation of distance between the expected and generated answers.
 
-## State of the Art Review
+## Literature Review
 
 The following is a list of research papers that apply NLP techniques to predict the performance of headlines using the Upworthy Research Archive dataset.
 
