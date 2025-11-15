@@ -81,6 +81,8 @@ Potential goals:
 
 ## State of the Art Review
 
+The following is a list of research papers that apply NLP techniques to predict the performance of headlines using the Upworthy Research Archive dataset.
+
 ### 1 - Nate Matias Meta Analysis (2020)
 
 The creator of this dataset has done a meta analysis as part of his Princeton University course:
