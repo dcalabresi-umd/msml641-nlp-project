@@ -5,12 +5,11 @@ Repository for the MSML 641 Natural Language Processing course Project - Fall 20
 ## Table of Contents
 
 - [Students](#students)
-- [Proposals](#proposals)
-  - [1 - A/B Testing performance improvement based on NLP Techniques (A case for Upworthy Research Archive)](#1---ab-testing-performance-improvement-based-on-nlp-techniques-a-case-for-upworthy-research-archive)
+- [Proposal](#proposal)
+  - [A/B Testing performance improvement based on NLP Techniques (A case for Upworthy Research Archive)](#1---ab-testing-performance-improvement-based-on-nlp-techniques-a-case-for-upworthy-research-archive)
     - [About the dataset](#about-the-dataset)
     - [About Upworthy](#about-upworthy)
-  - [2 - Compare and Improve Evaluation Metrics for Agentic Answers Evaluation (Discarded)](#2---compare-and-improve-evaluation-metrics-for-agentic-answers-evaluation-discarded)
-- [Literature Review](#literature-review)
+  - [Literature Review](#literature-review)
   - [1 - Nate Matias Meta Analysis (2020)](#1---nate-matias-meta-analysis-2020)
   - [2 - Negativity drives online news consumption (2023)](#2---negativity-drives-online-news-consumption-2023)
   - [3 - Linguistic effects on news headline success: Evidence from thousands of online field experiments (2023)](#3---linguistic-effects-on-news-headline-success-evidence-from-thousands-of-online-field-experiments-2023)
@@ -189,3 +188,11 @@ Techniques applied:
 - LLM-Assisted 2-Upper Confidence Bounds (LLM-2UCBs): A modified version of the UCB algorithm where we can view the LLM's CTR prediction as auxiliary samples before the start of the online experiment.
 
 **Results:** The experimentation test measured the regret, this means the difference between the best possible outcome and the outcome achieved by the algorithm. LOLA outperformed traditional A/B tests by 4-5% and pure bandits by 2-3% in simulations.
+
+## Exploratory Data Analysis
+
+[1-exploratory-data-analysis.ipynb](1-exploratory-data-analysis.ipynb)
+
+The exploratory data analysis gave us a better understanding of the dataset and the records that can be used.
+
+We stored a cleaned version of the dataset in `dataset/processed/exploratory-packages-highest-ctr.csv`. This dataset only contains the Tests with different headlines used in the A/B tests. A flag has been added to identify the Package with the highest CTR in the Test.
