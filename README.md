@@ -68,6 +68,7 @@ The following is a list of research papers that apply NLP techniques to predict 
 The creator of this dataset has done a meta analysis as part of his Princeton University course:
 
 [Github - Lecture 15 - Asking Questions of the Upworthy Archive](https://github.com/natematias/design-governance-experiments/blob/master/2020/lectures/Lecture%2015%20-%20Asking%20Questions%20of%20the%20Upworthy%20Archive.pdf)
+
 [Github - Lecture 15 - Jupyter Notebook](https://github.com/natematias/design-governance-experiments/blob/master/2020/lecture-code/lecture-17-meta-analysis.R.ipynb)
 
 ### 2 - Negativity drives online news consumption (2023)
