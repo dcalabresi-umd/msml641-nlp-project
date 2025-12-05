@@ -197,3 +197,15 @@ Techniques applied:
 The exploratory data analysis gave us a better understanding of the dataset and the records that can be used.
 
 We stored a cleaned version of the dataset in `dataset/processed/exploratory-packages-highest-ctr.csv`. This dataset only contains the Tests with different headlines used in the A/B tests. A flag has been added to identify the Package with the highest CTR in the Test.
+
+## Feature Engineering
+
+After the exploration of the dataset has been done, the next step is to obtain new information from the dataset. The headlines text is the main source of information, but the text alone would be difficult to analyze for a traditional predictor. Different features could be derived from the text, for example:
+- Is famous person mentioned in the headline?
+- Does the headline use a specific english tense?
+- Does the headline includes a question?
+- Nouns, verbs, words, and characters count.
+
+The feature engineering part may stay with basic features extraction and not get into sentiment analysis or topic modeling which will be covered in the next sections.
+
+[2-feature-engineering.ipynb](2-feature-engineering.ipynb)
