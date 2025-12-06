@@ -210,8 +210,119 @@ The feature engineering part may stay with basic features extraction and not get
 
 [2-feature-engineering.ipynb](2-feature-engineering.ipynb)
 
+### Results
+
+Below is a summary table of the features extracted:
+
+- **Named entity features**:
+  - `headline_num_persons`, `headline_num_orgs`, `headline_num_gpes`: counts of people, organizations, and geo-political entities detected in the headline using SpaCy.
+  - `headline_has_person`, `headline_has_org`, `headline_has_gpe`, `headline_has_money`: binary flags indicating whether the headline mentions at least one person, organization, location, or monetary amount, based on the previous features.
+- **POS-based and basic text features**:
+  - `starts_with_verb`, `starts_with_pronoun`, `starts_with_number`: whether the first content token is a verb, pronoun, or number.
+  - `num_chars`, `num_tokens`, `avg_token_len`: basic length and tokenization statistics for the headline.
+  - `ends_with_qmark`, `ends_with_exclaim`: whether the headline ends with a question mark or exclamation mark.
+  - `has_quote`, `has_all_caps_word`: whether the headline contains any quote characters or a word in all caps.
+  - `num_nouns`, `num_verbs`, `num_adjs`, `num_advs`, `num_pronouns`: counts of nouns, verbs, adjectives, adverbs, and pronouns.
+- **Sentence style features**:
+  - `headline_imperative_verb`: flag indicating whether the headline has an imperative-style main verb. Based on POS tagging. It assumes that it's imperative if the root verb is in simple tense and there is no explicit subject related to it.
+- **Curiosity and intensity features**:
+  - `headline_has_curiosity_word`, `headline_curiosity_similarity`: The first one validates is the headlines has at least one of the words "why", "what", "how", "this", "these", "secrets". The second one validates the semantic similarity from the headline words to words in the previous list using SpaCy embeddings.
+  - `headline_has_intensity_word`, `headline_intensity_similarity`: Same than before but based on a list of words that are related to intensity ("very", "really", "incredibly", "so", "absolutely")
+- **Sentiment features using VADER**:
+  - `neg`, `neu`, `pos`, `compound`: negative, neutral, positive, and overall compound sentiment scores for the headline.
+- **Dataset/time features**:
+  - `created_at_dayofweek`, `created_at_hourofday`: day of week and hour of day when the test package was created.
+  - `test_group_size`: number of headline variants competing within the same A/B test.
+- **Readability features**:
+  - `read_flesch`, `read_coleman`: Flesch Reading Ease and Coleman–Liau index scores as two alternative readability measures.
+- **Generality/specificity feature**:
+  - `specificity_tfidf`: average TF-IDF score of the headline across the full corpus (higher values indicate more specific wording).
+
 ## Topic Modeling
 
-Include also Topic Entropy
+**Latent Dirichlet Allocation (LDA)**
 
-Analyze the use of BertTopic, Top2Vec, LDA, and GSDMM for topic modeling.
+LDA (Latent Dirichlet Allocation) is an unsupervised topic modeling technique that used to identify the topics in a corpus of text. It is a Bayesian probabilistic model based on mixture of words. For this reason, it's fitted for large corpora of text and not well suited for short texts like headlines.
+
+**GSDMM (Gibbs Sampling Dirichlet Multinomial Mixture)**
+
+The logic behind this algorithm is explained by an analogy in one of the cited papers:
+
+> Let us imagine that we are in a film class, where the students have to arrange themselves into groups according to their movie tastes. To simplify things, the professor asks them to quickly write down a couple of the movies they have recently watched. Now each student is effectively labeled with a preliminary, albeit imperfect, list of movies that represent their taste. The clustering algorithm then works as follows: the professor will randomly assign the students to K different tables (categories). In the next step, the students will move, with certain probability, to a different table. The probability of moving will depend on two things: the size of the table, and the movie interests of the student in such table. Essentially, the bigger the table, and the more similar the taste, the more likely for a student to make the move.
+
+This algorithm is based on clustering, and it assumes each text belongs to one out of K topics. It's better suited for short texts like headlines.
+
+**BERTopic**
+
+BERTopic is the state-of-the-art topic modeling technique. It uses BERT embeddings to represent the text. It's pipeline is defined by these steps:
+
+- Embedding: BERT embeddings are used to represent the text.
+- Dimensionality reduction: UMAP is used to reduce the dimensionality of the embeddings.
+- Clustering: HDBSCAN is used to cluster the embeddings.
+- Tokenization: At the end of the clustering we have an embedding for each headline and the cluster they belong to, but this is not the topic itself. We need to analyze the words on each cluster. For this reason, we need to tokenize the headlines text.
+- Weighting Scheme: Now, we need to assign a weight to each word in the cluster. Usually this is done using c-TF-IDF.
+- Representation Tuning: This stage is optional and we're not going to use it. The idea behind this step is to take the bag-of-words and represent it as a consolidated topic. Otherwise the topic is just a list of words with frequencies.
+
+The algorithm is better explained by the maintainers of the Python library:
+
+[BERTopic - The Algorithm](https://maartengr.github.io/BERTopic/algorithm/algorithm.html)
+
+**Decision**
+
+I'll use BERTopic for topic modeling as it's the state-of-the-art technique, has a robust theoretical foundation, and is practical for small datasets.
+
+[3-topic-modeling.ipynb](3-topic-modeling.ipynb)
+
+### Results
+
+50% of the headlines where assigned to a topic. The list of topics is saved in `dataset/processed/topics.csv`.
+
+Based on the top words of each topic, we titled the first 18 topics as follows:
+
+- –1: Miscellaneous
+- 0: She, He, Pronouns
+- 1: Kids
+- 2: Feminism
+- 3: Gay Marriage
+- 4: Viral Videos & Content
+- 5: Race & White People
+- 6: Food & Restaurants
+- 7: Fox News
+- 8: Jobs & Money
+- 9: Music
+- 10: Water & City
+- 11: Science
+- 12: Rape & Sexual Violence
+- 13: Abortion & Reproductive Rights
+- 14: Football & Sports
+- 15: Climate Change
+- 16: Space
+- 17: Fashion
+- 18: Minimum Wage
+
+It's worth to notice that, during the time of the data collection, Ebola and Gay Marriage were two topics widely discussed in the United States.
+
+Below is a summary table of the main topics discovered with BERTopic:
+
+| Topic | Count | Name | Representation (top words) | Representative headline example |
+| --- | --- | --- | --- | --- |
+| -1 | 11610 | Miscellaneous | [the, to, you, it, of, this, and, in, is, that...] | [Here's What It Feels Like To Be Gay, If You A...] |
+| 0 | 1869 | She, He, Pronouns | [she, her, to, the, he, was, his, and, but, it...] | [Women Like Her, Who Did What She Did, Aren't ...] |
+| 1 | 902 | Kids | [kids, to, these, teachers, these kids, of, th...] | [The 4 Words You Should Be Saying To Kids Inst...] |
+| 2 | 658 | Feminism | [women, feminism, men, feminist, they, the, to...] | [If You Still Don't Think We Need Feminism, Yo...] |
+| 3 | 629 | Gay Marriage | [gay, straight, marriage, gay marriage, the, t...] | [A Pastor Asks A Politician Why He Supports Ga...] |
+| 4 | 575 | Viral Videos & Content | [video, this video, seconds, this, the, you, d...] | [Over 2/3 Of The World Can't Watch This Video....] |
+| 5 | 555 | Race & White People | [white, race, white people, people, comedian, ...] | [A New And Creative Way To Help White People U...] |
+| 6 | 474 | Food & Restaurants | [food, restaurant, you, the, eat, your, it, fa...] | ['What's This About Fast Food Workers Complain...] |
+| 7 | 365 | Fox News | [news, fox news, fox, ferguson, the, police, c...] | [Fox News finally went off on Walmart for thei...] |
+| 8 | 324 | Jobs & Money | [jobs, money, poor, people, welfare, the, of, ...] | [The Top 6 Reasons Why Money Spent On Keeping ...] |
+| 9 | 314 | Music | [song, music, songs, this song, the, rapper, t...] | [The Music Industry Asked Him To Change 1 Word...] |
+| 10 | 274 | Water & City | [water, town, it, city, the, and, in, is, of, ...] | [It’s Got A Cool Name, It’s Locally Made, And ...] |
+| 11 | 248 | Science | [science, science guy, scientist, the, of, the...] | [How do we get kids interested in science? Bil...] |
+| 12 | 248 | Rape & Sexual Violence | [rape, raped, sexually, assault, assaulted, vi...] | [They Let A Rape Survivor Tell Her Story. But ...] |
+| 13 | 231 | Abortion & Reproductive Rights | [abortion, cancer, pregnant, baby, abortions, ...] | [Some Anti-Abortion Protestors Learn Some Abor...] |
+| 14 | 219 | Football & Sports | [football, player, nfl, football player, the n...] | [A Football Player Hit His Wife On Video. Amer...] |
+| 15 | 198 | Climate Change | [climate, climate change, change, about climat...] | [Do You Kind Of Secretly Believe These 6 Myths...] |
+| 16 | 181 | Space | [space, we, nasa, live, big bang, bang, scient...] | ['What A Wonderful World' spoken with visuals ...] |
+| 17 | 177 | Fashion | [fashion, models, model, look, beauty, photosh...] | [An Actress And A Mogul Point Out A Pretty Sol...] |
+| 18 | 170 | Minimum Wage | [wage, minimum wage, minimum, the minimum, rai...] | [The Most Simple Argument Against Raising The ...] |
