@@ -209,3 +209,9 @@ After the exploration of the dataset has been done, the next step is to obtain n
 The feature engineering part may stay with basic features extraction and not get into sentiment analysis or topic modeling which will be covered in the next sections.
 
 [2-feature-engineering.ipynb](2-feature-engineering.ipynb)
+
+## Topic Modeling
+
+Include also Topic Entropy
+
+Analyze the use of BertTopic, Top2Vec, LDA, and GSDMM for topic modeling.
