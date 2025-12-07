@@ -326,3 +326,55 @@ Below is a summary table of the main topics discovered with BERTopic:
 | 16 | 181 | Space | [space, we, nasa, live, big bang, bang, scient...] | ['What A Wonderful World' spoken with visuals ...] |
 | 17 | 177 | Fashion | [fashion, models, model, look, beauty, photosh...] | [An Actress And A Mogul Point Out A Pretty Sol...] |
 | 18 | 170 | Minimum Wage | [wage, minimum wage, minimum, the minimum, rai...] | [The Most Simple Argument Against Raising The ...] |
+
+# Analysis
+
+Many of the papers reviewed in the literature analyze how different characteristics of the headline (Sentiment, topic, sentence structure, etc.) affect the click rate, but these correlations will have many confounders, they don't take into account that headlines occur at different times, days of the week, with different audiences, appear in different parts of the website, etc.
+
+The only way to control for these confounders is to verify each A/B Test individually.
+
+To start with the analysis, we'll run a regression model to predict the click rate from the features, similarly to what was done in the papers mentioned before. We're not going to take this as statistically significant but it could give us some insights.
+
+## CTR Prediction Models
+
+[4-ctr-prediction.ipynb](4-ctr-prediction.ipynb)
+
+### Results
+
+The analysis of the engineered features and their statistical significance gave us the following results:
+
+**Named entities**
+
+The mention of people clearly increases the CTR while the mention of money decreases it.
+
+**Sentence starting**
+
+Headlines starting with a pronoun are associated with a lower CTR, this isn't something we expected.
+
+**Basic text features**
+
+The only conclusion we can draw from this is that users prefer shorter headlines in general.
+
+**Question/Exclamation features**
+
+Headlines with questions, exclamation marks, or all caps words have clearly a lower CTR.
+
+**Sentence style**
+
+Not much can be interpreted from this, statistically headlines are not affected by the use of curiosity or intensity words, as well as the use of verbs in imperative modes. I expected something different from this. I would have assumed that the use of curiosity words would increase the CTR. In the Confirmatory dataset the curiosity words decreased the CTR but it's not a very significant correlation.
+
+**Sentiment**
+
+Compound ranges from -1 to 1, with 0 being neutral, -1 negative and 1 positive. In the Exploratory dataset, Positiveness is associated with a decrease in the CTR, but in the Confirmatory dataset, the correlation is not statistically significant.
+
+**Test Size**
+
+It can't be denied that the use of multiple headlines (packages) in an A/B test decreases the CTR overall. This may be because the test of more headlines, include more versions of the headlines that aren't so effective.
+
+**Specificity**
+
+The use of specific words is associated with a decrease in the CTR.
+
+### Literature Confirmation/Rejection
+
+Two published and peer-reviewed papers confirmed that a negative sentiment is associated with a higher CTR. Those studies use methods for sentiment analysis that are not good for short texts like headlines. When applying VADER sentiment analysis to the headlines, the correlation is not statistically significant.
