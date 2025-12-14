@@ -5,19 +5,28 @@ Repository for the MSML 641 Natural Language Processing course Project - Fall 20
 ## Table of Contents
 
 - [Students](#students)
-- [Proposal](#proposal)
-  - [A/B Testing performance improvement based on NLP Techniques (A case for Upworthy Research Archive)](#1---ab-testing-performance-improvement-based-on-nlp-techniques-a-case-for-upworthy-research-archive)
-    - [About the dataset](#about-the-dataset)
-    - [About Upworthy](#about-upworthy)
-  - [Literature Review](#literature-review)
-  - [1 - Nate Matias Meta Analysis (2020)](#1---nate-matias-meta-analysis-2020)
-  - [2 - Negativity drives online news consumption (2023)](#2---negativity-drives-online-news-consumption-2023)
-  - [3 - Linguistic effects on news headline success: Evidence from thousands of online field experiments (2023)](#3---linguistic-effects-on-news-headline-success-evidence-from-thousands-of-online-field-experiments-2023)
-  - [4 - Reading dies in complexity: Online news consumers prefer simple writing](#4---reading-dies-in-complexity-online-news-consumers-prefer-simple-writing)
-  - [5 - Replacing an A/B Test with GPT (2023)](#5---replacing-an-ab-test-with-gpt-2023)
-  - [Headline sentiment and topic effect on online user engagement (2021)](#headline-sentiment-and-topic-effect-on-online-user-engagement-2021)
-  - [6 - Hypothesis Generation with Large Language Models (2024)](#6---hypothesis-generation-with-large-language-models-2024)
-  - [7 - LOLA: LLM-Assisted Online Learning Algorithm (2024)](#7---lola-llm-assisted-online-learning-algorithm-2024)
+- [About the Project](#about-the-project)
+- [1. Proposal - A/B Testing performance improvement based on NLP Techniques (A case for Upworthy Research Archive)](#1-proposal---ab-testing-performance-improvement-based-on-nlp-techniques-a-case-for-upworthy-research-archive)
+  - [1.1. About the dataset](#11-about-the-dataset)
+  - [1.2. About Upworthy](#12-about-upworthy)
+- [2. Literature Review](#2-literature-review)
+  - [2.1. Nate Matias Meta Analysis (2020)](#21-nate-matias-meta-analysis-2020)
+  - [2.2. Negativity drives online news consumption (2023)](#22-negativity-drives-online-news-consumption-2023)
+  - [2.3. Linguistic effects on news headline success: Evidence from thousands of online field experiments (2023)](#23-linguistic-effects-on-news-headline-success-evidence-from-thousands-of-online-field-experiments-2023)
+  - [2.4. Reading dies in complexity: Online news consumers prefer simple writing](#24-reading-dies-in-complexity-online-news-consumers-prefer-simple-writing)
+  - [2.5. Replacing an A/B Test with GPT (2023)](#25-replacing-an-ab-test-with-gpt-2023)
+  - [2.6. Headline sentiment and topic effect on online user engagement (2021)](#26-headline-sentiment-and-topic-effect-on-online-user-engagement-2021)
+  - [2.7. Hypothesis Generation with Large Language Models (2024)](#27-hypothesis-generation-with-large-language-models-2024)
+  - [2.8. LOLA: LLM-Assisted Online Learning Algorithm (2024)](#28-lola-llm-assisted-online-learning-algorithm-2024)
+- [3. Exploratory Data Analysis](#3-exploratory-data-analysis)
+- [4. Feature Engineering](#4-feature-engineering)
+  - [4.1. Results](#41-results)
+- [5. Topic Modeling](#5-topic-modeling)
+  - [5.1. Results](#51-results)
+- [6. Analysis](#6-analysis)
+  - [6.1. CTR Prediction Models](#61-ctr-prediction-models)
+    - [6.1.1. Results](#611-results)
+  - [6.2. Literature Confirmation/Rejection](#62-literature-confirmationrejection)
 
 
 ## Students
@@ -28,29 +37,29 @@ Repository for the MSML 641 Natural Language Processing course Project - Fall 20
 
 ## About the Project
 
-- Presentation
-  - 5 to 10 minutes
-  - Slides in Google Drive
-- Project Report
-  - Max 5 pages
-  - No code
-  - This readme file will be the project report
-  - ACL Short Paper format
-- Code
-  - This Github repository
+**Presentation**
 
-**Grading Rubric**
+Presentation should be 5 to 10 minutes. Slides are in Google Drive.
 
-| Criterion                        | Points | Description                                                 |
-|-----------------------------------|--------|-------------------------------------------------------------|
-| Problem Definition & Motivation   |   10   | Clarity, originality, and grounding in NLP concepts.        |
-| Methodology & Implementation      |   20   | Soundness of approach, correctness, and reproducibility.    |
-| Experimental Design               |   20   | Use of appropriate baselines, datasets, and evaluation metrics. |
-| Results & Analysis                |   25   | Quantitative rigor, qualitative insight, and linguistic interpretation. |
-| Presentation & Report Quality     |   10   | Clarity, organization, figures/tables, and references.      |
-| Reproducibility & Code Quality    |   10   | Well-documented and runnable code; transparent methodology. |
-| Ethical Considerations            |    5   | Awareness of limitations, fairness, and broader impact.     |
-| Interface/API Bonus (Optional)    |  +5    | Functional demo, API, or visualization tool.                |
+Slides: [MSML 641 - Final Project - Presentation](https://docs.google.com/presentation/d/1Qnr1B8s1sDSrY4eUx64RpJNulDVDW3tmrYtxoSfJZyI/edit?usp=sharing)
+
+**Report:**
+
+Max 5 pages. No code. ACL Short Paper format. Code to generate the report is in the `report` folder.
+
+[Report Paper](report/paper.pdf)
+
+**Grading Rubric:**
+
+Criterion:
+- Problem Definition & Motivation (10 points): Clarity, originality, and grounding in NLP concepts.
+- Methodology & Implementation (20 points): Soundness of approach, correctness, and reproducibility.
+- Experimental Design (20 points): Use of appropriate baselines, datasets, and evaluation metrics.
+- Results & Analysis (25 points): Quantitative rigor, qualitative insight, and linguistic interpretation.
+- Presentation & Report Quality (10 points): Clarity, organization, figures/tables, and references.
+- Reproducibility & Code Quality (10 points): Well-documented and runnable code; transparent methodology.
+- Ethical Considerations (5 points): Awareness of limitations, fairness, and broader impact.
+- Interface/API Bonus (Optional) (5 points): Functional demo, API, or visualization tool.
 
 ## 1. Proposal - A/B Testing performance improvement based on NLP Techniques (A case for Upworthy Research Archive)
 
@@ -71,11 +80,11 @@ Upworthy Research Archive is a widely known dataset in the NLP and A/B Testing c
 
 The dataset contains other columns like excerpt and share link, which are not visible in the Upworthy website and are only for social media sharing, which is not covered by the A/B testing.
 
-The goals of this project is to:
-- Do an analysis of the NLP techniques applied to predict the performance of a headline.
+The goals of this project are to:
+- Analyze the NLP techniques applied to predict the performance of a headline.
 - Compare the performance of the different NLP techniques as well as the LLM-based ones.
 - Try multiple classic NLP techniques ranging from bi-grams to BERT and evaluate their performance.
-- Do a cost-benefit analysis between the different NLP techniques and the LLM-based ones, as well as the possibility to use open-source or pre-trained models to reduce cost of the implementation.
+- Perform a cost-benefit analysis between the different NLP techniques and the LLM-based ones, as well as the possibility to use open-source or pre-trained models to reduce cost of the implementation.
 
 Terminology:
 - **Package**: Is a headline being tested. A record in the dataset. It's considered a package because sometimes the eyecather picture varies but the headline is the same.
@@ -89,9 +98,7 @@ This is an Upworthy presentation about the methodology they applied to create vi
 
 [Slideshare - How to make that one thing go viral? Just kidding!](https://www.slideshare.net/slideshow/how-to-make-that-one-thing-go-viral-just-kidding/15473996#1)
 
-It's worth to mention that the previous Upworthy presentation is about **virality**, which means people sharing the news on social networks, and people's audience clicking on the link to read the news.
-
-This dataset doesn't contain information about news sharing in social networks and it's mostly focused on the clickability of the headlines for people visiting Upworthy's website.
+It's worth to mention that the previous Upworthy presentation is about **virality**, which means people sharing the news on social networks, and people's audience clicking on the link to read the news. This dataset doesn't contain information about news sharing in social networks and it's mostly focused on the clickability of the headlines for people visiting Upworthy's website.
 
 ## 2. Literature Review
 
@@ -99,12 +106,17 @@ The following is a list of research papers that apply NLP techniques to predict 
 
 ### 2.1. Nate Matias Meta Analysis (2020)
 
-The creator of this dataset has done a meta analysis as part of his Princeton University course:
+The creator of the Upworthy Research Archive dataset has done a meta analysis as part of his Princeton University course:
 
 - [Github - Lecture 15 - Asking Questions of the Upworthy Archive](https://github.com/natematias/design-governance-experiments/blob/master/2020/lectures/Lecture%2015%20-%20Asking%20Questions%20of%20the%20Upworthy%20Archive.pdf)
 - [Github - Lecture 15 - Jupyter Notebook](https://github.com/natematias/design-governance-experiments/blob/master/2020/lecture-code/lecture-17-meta-analysis.R.ipynb)
 
-### 2.2. Negativity drives online news consumption (2023)
+**Techniques applied:**
+- De-meaning the data: The dataset contains the number of impressions and clicks for each headline. Comparing the click-rate between headlines in the dataset would be affected by the bias between articles. Some articles are more clickable than others (Or where published on different hours). To control for this bias, and do an intra-test comparison of the headlines, the mean of each test is substracted from the headline CTR.
+- Test fixed-effects model: Test with models that are designed to do regression for differences within a group of items.
+- Mix group-level variables: The author explains how variables which are constant within a test, should be included in the model. E.g. a factor that increases clickability may not be so effective if the test is run in a weekday.
+
+### 2.2. Negativity drives online news consumption (Robertson et al., 2023)
 
 - [Nature - Negativity drives online news consumption](https://www.nature.com/articles/s41562-023-01538-4)
 - [Nieman Lab - Negative words in news headlines generate more clicks, but sad words are more effective than angry or scary ones](https://www.niemanlab.org/2023/03/negative-words-in-news-headlines-generate-more-clicks-but-sad-words-are-more-effective-than-angry-or-scary-ones/)
@@ -120,7 +132,20 @@ Summary of the research:
 - Gunning Fog index for text complexity score.
 - Multilevel binomial regression
 
-### 2.3. Linguistic effects on news headline success: Evidence from thousands of online field experiments (2023)
+**Mutli-level binomial regression:**
+
+Instead of applying a de-meaning to the headline CTR and then doing a linear regression, the authors of this paper applied a multi-level binomial regression to the data. This model defines a estimator which is better suited for the information provided by the dataset.
+
+For the headline/package $i$ and the test $j$, the model is defined as:
+$$
+logit(p_{ij}) = \alpha_j+ \beta X_i
+$$
+
+With a different intercept coefficient alpha for each test and a set of coefficients beta for the features.
+
+Then $p_{ij}$, which is the probability of the headline, is fitted to a binomial distribution where $n$ is the number of impressions (Already given) and $p_{ij}$ is the probability of the headline to be clicked. The probability distribution is then fitted to the data using maximum likelihood estimation or probabilistic programming.
+
+### 2.3. Linguistic effects on news headline success: Evidence from thousands of online field experiments (Gligorić et al., 2023)
 
 - [PLOS ONE - Linguistic effects on news headline success: Evidence from thousands of online field experiments](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0281682)
 
@@ -132,7 +157,7 @@ Summary of the research:
 - Length is positively associated with headline success.
 - Higher readability is negatively associated with headline success.
 
-Eight hypotheses were tested in total.
+Eight hypotheses were tested in total. The authors concluded that the presence of negative-emotion words is positively associated with headline success. Length and the use of first-person singular words are also positively associated with headline success.
 
 **Techniques applied:**
 
@@ -141,7 +166,7 @@ Eight hypotheses were tested in total.
 - Linguistic Inquiry and Word Count (LIWC) for the positive and negative emotion categories.
 - Flesch reading-ease score
 
-### 2.4. Reading dies in complexity: Online news consumers prefer simple writing
+### 2.4. Reading dies in complexity: Online news consumers prefer simple writing (H Shulman et al., 2024)
 
 - [Science - Reading dies in complexity: Online news consumers prefer simple writing](https://www.science.org/doi/full/10.1126/sciadv.adn2555)
 
@@ -150,6 +175,7 @@ Eight hypotheses were tested in total.
 **Techniques applied:**
 
 - 24-item SDT paradigm to measure the reading difficulty of the headlines.
+- LWIC score for the readability of the headlines.
 
 **Results:** Thousands of field experiments across traditional (i.e., The Washington Post) and nontraditional news sites (i.e., Upworthy) showed that news readers are more likely to click on and engage with simple headlines than complex ones.
 
@@ -167,9 +193,11 @@ Eight hypotheses were tested in total.
   - GPT-3 embeddings using OpenAI embeddings API
 - Logistic regression on the difference vector of embeddings (embedding_a - embedding_b)
 
-**Results:** GPT-3 model achieved 87% accuracy on test set.
+**Results:** The author reached a 87% accuracy with the GPT-3 model on the test set. DistilBERT embeddings achieved an ~80% accuracy. Bag-of-Words basic method
 
-### 2.6. Headline sentiment and topic effect on online user engagement (2021)
+### 2.6. Headline sentiment and topic effect on online user engagement (Ludwig Jonsson et al., 2021)
+
+- [The Data Open - Headline sentiment and topic effect on online user engagement](https://rohitnag.xyz/files/Side%20Projects/DataOpenReport.pdf)
 
 **Hypothesis**
 
@@ -198,25 +226,7 @@ The initial hypothesis was that headline content would have a significant effect
 - **Image Analysis**: The choice of image affected user click rates by approximately 65% (top image performed 65% better than worst image in each group).
 - **Topic Coherence**: The GSDMM model achieved acceptable coherence scores (0.46183) when using the top 5 words per topic, but lower scores with more words.
 
-### 2.7. Hypothesis Generation with Large Language Models (2024)
-
-Working with an LLM, generate initial hypotheses from a small number of examples and then update them iteratively to improve the quality of hypotheses.
-
-[ACL Anthology - Hypothesis Generation with Large Language Models](https://aclanthology.org/2024.nlp4science-1.10/)
-
-[Github - Hypothesis Generation](https://github.com/ChicagoHAI/hypothesis-generation)
-
-**Hypothesis:** Can LLMs generate hypotheses or rules for classification?
-
-**Techniques applied:**
-
-- LLM as a hypothesis generator: From a small set of samples, the LLM generates a series of rules that could be used to classify the samples (E.g.: The presence of names is associated with a higher click rate)
-- LLM as a classifier: The LLM is used to classify the samples using each hypothesis and adjust the reward value for each one.
-- Upper Confidence Bound (UCB): Taken from multi-armed bandits, used to balance exploration and exploitation, and decide which hypothesis should be used and which ones should be discarded.
-
-**Results:** HypoGeniC outperforms zero-shot classification by 5% and few-shot classification by 3.3% in accuracy.
-
-### 2.8. LOLA: LLM-Assisted Online Learning Algorithm (2024)
+### 2.7. LOLA: LLM-Assisted Online Learning Algorithm (2024)
 
 LOLA, integrates LLM predictions into a bandit algorithm. Found standalone LLM predictions were only slightly above chance, but LOLA outperformed traditional A/B tests and pure bandits in simulations.
 
@@ -232,7 +242,14 @@ LOLA, integrates LLM predictions into a bandit algorithm. Found standalone LLM p
 
 **Results:** The experimentation test measured the regret, this means the difference between the best possible outcome and the outcome achieved by the algorithm. LOLA outperformed traditional A/B tests by 4-5% and pure bandits by 2-3% in simulations.
 
-## 3. Exploratory Data Analysis
+## 3. Goals
+
+The goals of this project are to:
+
+- Analyze and confirm the hypotheses found in the literature. Among them, confirm that negative sentiment, larger, and simpler headlines are positively associated with headline success.
+- Compare prediction models based on traditional NLP techniques and LLM-based ones.
+
+## 4. Exploratory Data Analysis
 
 The following notebook contains the details of the exploratory data analysis: [1-exploratory-data-analysis.ipynb](1-exploratory-data-analysis.ipynb)
 
@@ -240,7 +257,7 @@ The exploratory data analysis gave us a better understanding of the dataset and 
 
 We stored a cleaned version of the dataset in `dataset/processed/exploratory-packages-highest-ctr.csv`. In this dataset we only kept the Tests where different headlines were used in the A/B tests. In addition, a flag has been added to identify the Package with the highest CTR in the Test.
 
-## 4. Feature Engineering
+## 5. Feature Engineering
 
 After the exploration of the dataset has been done, the next step is to obtain new information from the dataset. The headlines text is the main source of information, but the text alone would be difficult to analyze for a traditional predictor. Different features could be derived from the text, for example:
 - Is famous person mentioned in the headline?
@@ -252,7 +269,7 @@ The feature engineering part may stay with basic features extraction and not get
 
 [2-feature-engineering.ipynb](2-feature-engineering.ipynb)
 
-### 4.1. Results
+### 5.1. Results
 
 Below is a summary table of the features extracted:
 
@@ -280,7 +297,7 @@ Below is a summary table of the features extracted:
 - **Generality/specificity feature**:
   - `specificity_tfidf`: average TF-IDF score of the headline across the full corpus (higher values indicate more specific wording).
 
-## 5. Topic Modeling
+## 6. Topic Modeling
 
 **Latent Dirichlet Allocation (LDA)**
 
@@ -315,7 +332,7 @@ I'll use BERTopic for topic modeling as it's the state-of-the-art technique, has
 
 [3-topic-modeling.ipynb](3-topic-modeling.ipynb)
 
-### 5.1. Results
+### 6.1. Results
 
 50% of the headlines where assigned to a topic. The list of topics is saved in `dataset/processed/topics.csv`.
 
@@ -369,7 +386,7 @@ Below is a summary table of the main topics discovered with BERTopic:
 | 17 | 177 | Fashion | [fashion, models, model, look, beauty, photosh...] | [An Actress And A Mogul Point Out A Pretty Sol...] |
 | 18 | 170 | Minimum Wage | [wage, minimum wage, minimum, the minimum, rai...] | [The Most Simple Argument Against Raising The ...] |
 
-## 6. Analysis
+## 7. Analysis
 
 Many of the papers reviewed in the literature analyze how different characteristics of the headline (Sentiment, topic, sentence structure, etc.) affect the click rate, but these correlations will have many confounders, they don't take into account that headlines occur at different times, days of the week, with different audiences, appear in different parts of the website, etc.
 
@@ -377,11 +394,11 @@ The only way to control for these confounders is to verify each A/B Test individ
 
 To start with the analysis, we'll run a regression model to predict the click rate from the features, similarly to what was done in the papers mentioned before. We're not going to take this as statistically significant but it could give us some insights.
 
-### 6.1. CTR Prediction Models
+### 7.1. CTR Prediction Models
 
 [4-ctr-prediction.ipynb](4-ctr-prediction.ipynb)
 
-#### 6.1.1. Results
+#### 7.1.1. Results
 
 The analysis of the engineered features and their statistical significance gave us the following results:
 
@@ -417,6 +434,6 @@ It can't be denied that the use of multiple headlines (packages) in an A/B test 
 
 The use of specific words is associated with a decrease in the CTR.
 
-#### 6.2. Literature Confirmation/Rejection
+#### 7.2. Literature Confirmation/Rejection
 
 Two published and peer-reviewed papers confirmed that a negative sentiment is associated with a higher CTR. Those studies use methods for sentiment analysis that are not good for short texts like headlines. When applying VADER sentiment analysis to the headlines, the correlation is not statistically significant.
