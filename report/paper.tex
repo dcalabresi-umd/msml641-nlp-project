@@ -1,0 +1,93 @@
+\documentclass[11pt]{article}
+\usepackage[final]{acl}
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{array}
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\title{A/B Testing Performance Improvement Based on NLP Techniques: A Case Study of the Upworthy Research Archive}
+
+\author{
+  Damian Calabresi \and
+  Jaeyeol You \and
+  Hersh Rajesh Chawla \\
+  University of Maryland, College Park
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This project analyzes NLP techniques for predicting headline performance using the Upworthy Research Archive dataset. We compare traditional NLP methods (ranging from bi-grams to BERT) with LLM-based approaches for click-through rate (CTR) prediction. Our analysis includes feature engineering, topic modeling using BERTopic, and evaluation of various linguistic features on headline success. We examine the relationship between sentiment, topic, readability, and other text characteristics with CTR, while controlling for confounders through A/B test analysis.
+\end{abstract}
+
+\section{Introduction}
+
+The Upworthy Research Archive is an open dataset of thousands of A/B tests of headlines conducted by Upworthy from January 2013 to April 2015 \cite{matias2021upworthy}. Continue...
+
+\section{Related Work}
+
+Several studies have analyzed the Upworthy dataset to understand factors affecting headline success. Continue...
+
+\section{Methodology}
+
+\subsection{Dataset}
+
+The Upworthy Research Archive contains A/B test results. Continue...
+
+\subsection{Feature Engineering}
+
+We extracted comprehensive linguistic features from headlines. Continue...
+
+\subsection{Topic Modeling}
+
+We chose BERTopic \cite{grootendorst2022bertopic} for topic modeling as it represents the state-of-the-art approach for short texts. BERTopic's pipeline includes: (1) BERT embeddings for text representation, (2) UMAP for dimensionality reduction, (3) HDBSCAN for clustering, (4) tokenization of clustered headlines, and (5) c-TF-IDF weighting for topic representation.
+
+Traditional methods like LDA are unsuited for short texts like headlines, and while GSDMM is designed for short texts, BERTopic has shown superior performance and interpretability.
+
+\subsection{Analysis Approach}
+
+We acknowledge that simple correlations between features and CTR contain many confounders (time, audience, placement, etc.). However, since each A/B test provides controlled comparisons, we analyze features both at the corpus level and within test groups to identify robust patterns.
+
+\section{Results}
+
+\subsection{Topic Modeling Results}
+
+BERTopic assigned 50\% of headlines to meaningful topics
+
+\subsection{Feature Impact on CTR}
+
+Our regression analysis revealed several significant patterns. Continue...
+
+\subsection{Literature Validation}
+
+Our results partially contradict published findings on sentiment. While \citet{robertson2023negativity} and \citet{munger2023linguistic} found significant negative sentiment effects using LIWC, our VADER-based analysis found no statistically significant correlation. This discrepancy may stem from: (1) different sentiment analysis tools (LIWC vs. VADER), (2) different methodological approaches, or (3) VADER being more appropriate for short texts.
+
+\section{Discussion}
+
+Our findings highlight several important considerations for headline optimization. Continue...
+
+\section{Limitations and Future Work}
+
+Our analysis has several limitations. Continue...
+
+\section{Conclusion}
+
+This study provides a comprehensive analysis of linguistic features affecting headline CTR using the Upworthy Research Archive. Continue...
+
+\section*{Acknowledgments}
+
+We thank the course instructor for his guidance throughout this project. We also acknowledge Nathan Matias for creating and maintaining the Upworthy Research Archive dataset.
+
+\bibliography{custom}
+\bibliographystyle{acl_natbib}
+
+\end{document}
