@@ -257,47 +257,105 @@ The exploratory data analysis gave us a better understanding of the dataset and 
 
 We stored a cleaned version of the dataset in `dataset/processed/exploratory-packages-highest-ctr.csv`. In this dataset we only kept the Tests where different headlines were used in the A/B tests. In addition, a flag has been added to identify the Package with the highest CTR in the Test.
 
+### 4.1. Results
+
+**Number of Packages per Test**
+
+![Packages by Test](images/packages-by-test-histogram.png)
+
+Most of the articles tested contain between 4 and 6 packages. There are tests with up to 14 packages, but these may be exceptions. Some of these packages may contain the same headline test but different eyecatcher. Those packages were removed from further analysis.
+
+**CTR De-meaning**
+
+CTRs of different packages/headlines are not independent, each package is affected by confounders like the time of the day, the position in the website, and the content of the article. Within a test, the CTR of the packages are independent indeed, as this is the purpose of a randomized A/B test.
+
+To make every package CTR comparable, we de-meaned the CTR by the mean and standard deviation of the test. This means that the CTR of each package is now compared to the average CTR of the test.
+
+![CTR De-meaning](images/ctr-demeaned-histogram.png)
+
+The histogram shows that the de-meaned CTR is centered around 0, with similar number of packages above and below 0, as expected.
+
+**First Place and Winner**
+
+The dataset defines these columns as:
+- `first_place`: Shown to editors to guide decisions about what test to choose
+- `winner`: Whether a package was selected by editors to be used on the Upworthy site after the test
+
+We created a new feature named `is_highest_ctr` to identify the package with the highest CTR in the test. This is the real conclusion that can be drawn from the dataset.
+
 ## 5. Feature Engineering
 
-After the exploration of the dataset has been done, the next step is to obtain new information from the dataset. The headlines text is the main source of information, but the text alone would be difficult to analyze for a traditional predictor. Different features could be derived from the text, for example:
+After the exploration of the dataset has been done, the next step is to obtain new information from the dataset. The headline text is the main source of information, but the text alone would be difficult to analyze for a traditional predictor. Different features could be derived from the text, for example:
 - Is famous person mentioned in the headline?
 - Does the headline use a specific english tense?
 - Does the headline includes a question?
 - Nouns, verbs, words, and characters count.
-
-The feature engineering part may stay with basic features extraction and not get into sentiment analysis or topic modeling which will be covered in the next sections.
+- Sentiment analysis
+- Readiness Complexity Score
 
 [2-feature-engineering.ipynb](2-feature-engineering.ipynb)
 
-### 5.1. Results
+### 5.1. Named-Entity Recognition
 
-Below is a summary table of the features extracted:
+Named-entity recognition (NER) is the process of identifying and extracting named entities from text. We used SpaCy to extract the named entities from the headlines. From the detected entities we considered the ones tagged as Person, Organization, and Geo-political Entity. For each of these types we generated a boolean flag indicating if the headline mentions at least one entity of that type and a counter of those entities.
 
-- **Named entity features**:
-  - `headline_num_persons`, `headline_num_orgs`, `headline_num_gpes`: counts of people, organizations, and geo-political entities detected in the headline using SpaCy.
-  - `headline_has_person`, `headline_has_org`, `headline_has_gpe`, `headline_has_money`: binary flags indicating whether the headline mentions at least one person, organization, location, or monetary amount, based on the previous features.
-- **POS-based and basic text features**:
-  - `starts_with_verb`, `starts_with_pronoun`, `starts_with_number`: whether the first content token is a verb, pronoun, or number.
-  - `num_chars`, `num_tokens`, `avg_token_len`: basic length and tokenization statistics for the headline.
-  - `ends_with_qmark`, `ends_with_exclaim`: whether the headline ends with a question mark or exclamation mark.
-  - `has_quote`, `has_all_caps_word`: whether the headline contains any quote characters or a word in all caps.
-  - `num_nouns`, `num_verbs`, `num_adjs`, `num_advs`, `num_pronouns`: counts of nouns, verbs, adjectives, adverbs, and pronouns.
-- **Sentence style features**:
-  - `headline_imperative_verb`: flag indicating whether the headline has an imperative-style main verb. Based on POS tagging. It assumes that it's imperative if the root verb is in simple tense and there is no explicit subject related to it.
-- **Curiosity and intensity features**:
-  - `headline_has_curiosity_word`, `headline_curiosity_similarity`: The first one validates is the headlines has at least one of the words "why", "what", "how", "this", "these", "secrets". The second one validates the semantic similarity from the headline words to words in the previous list using SpaCy embeddings.
-  - `headline_has_intensity_word`, `headline_intensity_similarity`: Same than before but based on a list of words that are related to intensity ("very", "really", "incredibly", "so", "absolutely")
-- **Sentiment features using VADER**:
-  - `neg`, `neu`, `pos`, `compound`: negative, neutral, positive, and overall compound sentiment scores for the headline.
-- **Dataset/time features**:
-  - `created_at_dayofweek`, `created_at_hourofday`: day of week and hour of day when the test package was created.
-  - `test_group_size`: number of headline variants competing within the same A/B test.
-- **Readability features**:
-  - `read_flesch`, `read_coleman`: Flesch Reading Ease and Coleman–Liau index scores as two alternative readability measures.
-- **Generality/specificity feature**:
-  - `specificity_tfidf`: average TF-IDF score of the headline across the full corpus (higher values indicate more specific wording).
+Listing the names of people tagged shows that most of them are already famous people so we didn't require any further filtering. A minimal set of words are identified as Person, Organization, or Geo-political Entity while they really aren't, but we consider those outliers don't represent a significant portion of the data.
+
+The following features were generated: `headline_num_persons`, `headline_num_orgs`, `headline_num_gpes`, `headline_has_person`, `headline_has_org`, `headline_has_gpe`.
+
+### 5.2. POS-based and basic text features
+
+We also used SpaCy to extract the POS tags and identify different sentence characteristics that could potentially be useful for the analysis:
+
+- `starts_with_verb`, `starts_with_pronoun`, `starts_with_number`: whether the first content token is a verb, pronoun, or number.
+- `num_chars`, `num_tokens`, `avg_token_len`: basic length and tokenization statistics for the headline.
+- `ends_with_qmark`, `ends_with_exclaim`: whether the headline ends with a question mark or exclamation mark.
+- `has_quote`, `has_all_caps_word`: whether the headline contains any quote characters or a word in all caps.
+- `num_nouns`, `num_verbs`, `num_adjs`, `num_advs`, `num_pronouns`: counts of nouns, verbs, adjectives, adverbs, and pronouns.
+
+### 5.3. Sentence style features
+
+One of the papers reviewed in the literature analyzed the sentence style of the headlines. We applied a custom approach to identify if the headline has an imperative style. It assumes that it's imperative if the root verb is in simple tense and there is no explicit subject related to it. We also leveraged the SpaCy library to identify the structure of the sentence. The following feature was generated: `headline_imperative_verb`.
+
+### 5.4. Curiosity and intensity features
+
+We came up with an approach to identify if the sentence expresses some intensity or curiosity. We identified a list of words commonly used in "curious" sentences or word that demonstrate intensity. Then we used the SpaCy embeddings simularity feature to identify is any of the words in the headline are similar to any of the words in the list. If they are, that similarity is indicated as the level of curiosity or intensity.
+
+We also validate if the exact word is found in the headline to validate if the embeddings similarity approach helps or not.
+
+The following features were generated: `headline_has_curiosity_word`, `headline_curiosity_similarity`, `headline_has_intensity_word`, `headline_intensity_similarity`.
+
+### 5.5. Sentiment Analysis
+
+The material "Negativity drives online news consumption (2023)" uses LIWC to analyze the sentiment of the headlines. LIWC is the most common method to analyze the sentiment of the text. We did research to understand how these methods work and found that LIWC is based on a sentiment dictionary and word counts. This makes it not very accurate for short texts like headlines. This is in fact mentioned in hte LIWC website:
+
+> Because the meaning extraction method operates by analyzing word co-occurrences, extremely short texts have a tendency to add a lot of noise to our results. This is because a text with only two words ("I'm" and "hungry") does not provide a lot of information about how words tend to be used. Two words co-occur and all other words do not. In general, we recommend omitting texts with fewer than 10 words. If you are working with longer texts, you should consider setting this threshold higher (e.g., 100 words or even 1,000 words).
+
+We used the VADER sentiment analysis tool from the NLTK library to analyze the sentiment of the headlines. VADER is a lexicon-based sentiment analysis tool that is designed to work with social media and short text in general. It makes focus on punctuation, capitalization, and word context in short sentences. Using this method, the following features were generated:
+- `neg`: negative sentiment score.
+- `neu`: neutral sentiment score.
+- `pos`: positive sentiment score.
+- `compound`: compound sentiment score (Varies from -1 to 1, where -1 is very negative, 0 is neutral, and 1 is very positive).
+
+### 5.6. Dataset related features
+
+We also generated some features that could be helpful in the prediction of the CTR: `created_at_dayofweek`, `created_at_hourofday`, `test_group_size`.
+
+### 5.7 Readability features
+
+We used the Flesch Reading Ease and Coleman–Liau index scores as two alternative readability measures. We applied both of them as Flesch Reading Ease score is based on the number of syllables in the words and it may not be very accurate for short texts like headlines. Coleman–Liau index is based on the number of characters per word and may be better for short texts.
+
+The paper "Linguistic effects on news headline success: Evidence from thousands of online field experiments (2023)" uses the Flesch Reading Ease score to measure the readability of the headlines. We'll compare the results obtained with this method and the Coleman–Liau index.
+
+The following features were generated: `read_flesch`, `read_coleman`.
+
+### 5.8 Specificity feature
+
+To calculate the specificity of the headline, first we generated a corpus based on the entire dataset. Then we used the Scikit-learn TF-IDF vectorizer to calculate the TF-IDF score for each headline and each word. The inclusion of infrequent words is supposed to increase the specificity of a headline compared to others. The result was stored in the feature `specificity_tfidf`.
 
 ## 6. Topic Modeling
+
+To understand how different features affect the CTR we may also need to control for the topic of the headline, as different topics may have a different audience. We analyzed different algorithms for topic modeling.
 
 **Latent Dirichlet Allocation (LDA)**
 
@@ -326,11 +384,9 @@ The algorithm is better explained by the maintainers of the Python library:
 
 [BERTopic - The Algorithm](https://maartengr.github.io/BERTopic/algorithm/algorithm.html)
 
-**Decision**
+We chose to use BERTopic for topic modeling as it's the state-of-the-art technique and its practical for small datasets.
 
-I'll use BERTopic for topic modeling as it's the state-of-the-art technique, has a robust theoretical foundation, and is practical for small datasets.
-
-[3-topic-modeling.ipynb](3-topic-modeling.ipynb)
+The topic modeling notebook is [3-topic-modeling.ipynb](3-topic-modeling.ipynb).
 
 ### 6.1. Results
 
@@ -341,99 +397,104 @@ Based on the top words of each topic, we titled the first 18 topics as follows:
 - –1: Miscellaneous
 - 0: She, He, Pronouns
 - 1: Kids
-- 2: Feminism
-- 3: Gay Marriage
-- 4: Viral Videos & Content
-- 5: Race & White People
-- 6: Food & Restaurants
-- 7: Fox News
-- 8: Jobs & Money
-- 9: Music
+- 2: Food & Restaurants
+- 3: Racism
+- 4: Gay Marriage
+- 5: Feminism
+- 6: Science & Medicine
+- 7: Pets & Animals
+- 8: Music
+- 9: Crime
 - 10: Water & City
-- 11: Science
-- 12: Rape & Sexual Violence
-- 13: Abortion & Reproductive Rights
-- 14: Football & Sports
-- 15: Climate Change
-- 16: Space
-- 17: Fashion
-- 18: Minimum Wage
+- 11: Guns & Wars
+- 12: Money & Economy
+- 13: Fashion
+- 14: Climate Change
+- 15: Space
+- 16: Viral Videos & Content
+- 17: Men (He, Him, His)
+- 18: Future & Predictions
 
-It's worth to notice that, during the time of the data collection, Ebola and Gay Marriage were two topics widely discussed in the United States.
+### 7.1. CTR Prediction with Traditional NLP Techniques
 
-Below is a summary table of the main topics discovered with BERTopic:
-
-| Topic | Count | Name | Representation (top words) | Representative headline example |
-| --- | --- | --- | --- | --- |
-| -1 | 11610 | Miscellaneous | [the, to, you, it, of, this, and, in, is, that...] | [Here's What It Feels Like To Be Gay, If You A...] |
-| 0 | 1869 | She, He, Pronouns | [she, her, to, the, he, was, his, and, but, it...] | [Women Like Her, Who Did What She Did, Aren't ...] |
-| 1 | 902 | Kids | [kids, to, these, teachers, these kids, of, th...] | [The 4 Words You Should Be Saying To Kids Inst...] |
-| 2 | 658 | Feminism | [women, feminism, men, feminist, they, the, to...] | [If You Still Don't Think We Need Feminism, Yo...] |
-| 3 | 629 | Gay Marriage | [gay, straight, marriage, gay marriage, the, t...] | [A Pastor Asks A Politician Why He Supports Ga...] |
-| 4 | 575 | Viral Videos & Content | [video, this video, seconds, this, the, you, d...] | [Over 2/3 Of The World Can't Watch This Video....] |
-| 5 | 555 | Race & White People | [white, race, white people, people, comedian, ...] | [A New And Creative Way To Help White People U...] |
-| 6 | 474 | Food & Restaurants | [food, restaurant, you, the, eat, your, it, fa...] | ['What's This About Fast Food Workers Complain...] |
-| 7 | 365 | Fox News | [news, fox news, fox, ferguson, the, police, c...] | [Fox News finally went off on Walmart for thei...] |
-| 8 | 324 | Jobs & Money | [jobs, money, poor, people, welfare, the, of, ...] | [The Top 6 Reasons Why Money Spent On Keeping ...] |
-| 9 | 314 | Music | [song, music, songs, this song, the, rapper, t...] | [The Music Industry Asked Him To Change 1 Word...] |
-| 10 | 274 | Water & City | [water, town, it, city, the, and, in, is, of, ...] | [It’s Got A Cool Name, It’s Locally Made, And ...] |
-| 11 | 248 | Science | [science, science guy, scientist, the, of, the...] | [How do we get kids interested in science? Bil...] |
-| 12 | 248 | Rape & Sexual Violence | [rape, raped, sexually, assault, assaulted, vi...] | [They Let A Rape Survivor Tell Her Story. But ...] |
-| 13 | 231 | Abortion & Reproductive Rights | [abortion, cancer, pregnant, baby, abortions, ...] | [Some Anti-Abortion Protestors Learn Some Abor...] |
-| 14 | 219 | Football & Sports | [football, player, nfl, football player, the n...] | [A Football Player Hit His Wife On Video. Amer...] |
-| 15 | 198 | Climate Change | [climate, climate change, change, about climat...] | [Do You Kind Of Secretly Believe These 6 Myths...] |
-| 16 | 181 | Space | [space, we, nasa, live, big bang, bang, scient...] | ['What A Wonderful World' spoken with visuals ...] |
-| 17 | 177 | Fashion | [fashion, models, model, look, beauty, photosh...] | [An Actress And A Mogul Point Out A Pretty Sol...] |
-| 18 | 170 | Minimum Wage | [wage, minimum wage, minimum, the minimum, rai...] | [The Most Simple Argument Against Raising The ...] |
-
-## 7. Analysis
-
-Many of the papers reviewed in the literature analyze how different characteristics of the headline (Sentiment, topic, sentence structure, etc.) affect the click rate, but these correlations will have many confounders, they don't take into account that headlines occur at different times, days of the week, with different audiences, appear in different parts of the website, etc.
-
-The only way to control for these confounders is to verify each A/B Test individually.
-
-To start with the analysis, we'll run a regression model to predict the click rate from the features, similarly to what was done in the papers mentioned before. We're not going to take this as statistically significant but it could give us some insights.
-
-### 7.1. CTR Prediction Models
-
+CTR prediction has been done using a linear regression in the following notebook:
 [4-ctr-prediction.ipynb](4-ctr-prediction.ipynb)
 
 #### 7.1.1. Results
 
 The analysis of the engineered features and their statistical significance gave us the following results:
 
-**Named entities**
+- **Named entities**: There is no correlation with the CTR.
+- **Sentence starting, Question/Exclamation features**: Headlines starting with a verb, with question or exclamation marks are associated with a lower CTR, this isn't something we expected.
+- **Basic text features**: Definitively there is a correlation with the num of pronouns.
+- **Sentence style**: A mild correlation with the use of specific intensity words.
+- **Sentiment**: Contrary to what we expected, based on the reviewed literature, there is no correlation with the sentiment of the headline at all.
+- **Specificity**: The use of specific words is associated with a decrease in the CTR.
 
-The mention of people clearly increases the CTR while the mention of money decreases it.
+These results were obtained doing a linear regression over the engineered features in the exploratory and confirmatory datasets. Regressions were run for all the features simultaneously and then for groups of features to avoid multicollinearity issues.
 
-**Sentence starting**
+P-value and confidence interval for each feature taken as relevant:
 
-Headlines starting with a pronoun are associated with a lower CTR, this isn't something we expected.
+| Feature                        | coef      | std err | t       | P \>|t\| | [0.025   | 0.975]    |
+|--------------------------------|-----------|---------|---------|---------|----------|-----------|
+| starts_with_verb               |  -0.0679  | 0.012   | -5.615  | 0.000   | -0.092   | -0.044    |
+| starts_with_pronoun            |   0.0254  | 0.009   |  2.869  | 0.004   |  0.008   |  0.043    |
+| num_pronouns                   |   0.0228  | 0.004   |  6.131  | 0.000   |  0.016   |  0.030    |
+| ends_with_qmark                |  -0.1967  | 0.013   | -14.926 | 0.000   | -0.223   | -0.171    |
+| ends_with_exclaim              |  -0.2211  | 0.037   | -5.953  | 0.000   | -0.294   | -0.148    |
+| headline_has_intensity_word    |   0.0315  | 0.011   |  2.890  | 0.004   |  0.010   |  0.053    |
+| headline_intensity_similarity  |   4.5559  | 2.082   |  2.188  | 0.029   |  0.475   |  8.636    |
+| neg                            |  26.4455  | 15.158  |  1.745  | 0.081   | -3.265   | 56.156    |
+| neu                            |  26.3195  | 15.159  |  1.736  | 0.083   | -3.392   | 56.031    |
+| pos                            |  26.1057  | 15.159  |  1.722  | 0.085   | -3.607   | 55.818    |
+| compound                       |   0.0085  | 0.032   |  0.265  | 0.791   | -0.054   |  0.071    |
+| specificity_tfidf              |  -0.5161  | 0.061   | -8.496  | 0.000   | -0.635   | -0.397    |
 
-**Basic text features**
+#### 7.3. CTR Prediction per Topic
 
-The only conclusion we can draw from this is that users prefer shorter headlines in general.
-
-**Question/Exclamation features**
-
-Headlines with questions, exclamation marks, or all caps words have clearly a lower CTR.
-
-**Sentence style**
-
-Not much can be interpreted from this, statistically headlines are not affected by the use of curiosity or intensity words, as well as the use of verbs in imperative modes. I expected something different from this. I would have assumed that the use of curiosity words would increase the CTR. In the Confirmatory dataset the curiosity words decreased the CTR but it's not a very significant correlation.
-
-**Sentiment**
-
-Compound ranges from -1 to 1, with 0 being neutral, -1 negative and 1 positive. In the Exploratory dataset, Positiveness is associated with a decrease in the CTR, but in the Confirmatory dataset, the correlation is not statistically significant.
-
-**Test Size**
-
-It can't be denied that the use of multiple headlines (packages) in an A/B test decreases the CTR overall. This may be because the test of more headlines, include more versions of the headlines that aren't so effective.
-
-**Specificity**
-
-The use of specific words is associated with a decrease in the CTR.
+In the notebook [5-topic-modeling-ctr-prediction.ipynb](5-topic-modeling-ctr-prediction.ipynb) we ran a linear regression for each topic separately. The results are not statistically significant for any of the topics due to the small number of headlines per topic.
 
 #### 7.2. Literature Confirmation/Rejection
 
-Two published and peer-reviewed papers confirmed that a negative sentiment is associated with a higher CTR. Those studies use methods for sentiment analysis that are not good for short texts like headlines. When applying VADER sentiment analysis to the headlines, the correlation is not statistically significant.
+Two published and peer-reviewed papers confirmed that a negative sentiment is associated with a higher CTR. Those methods use LIWC for sentiment analysis which, as explained before (And it's confirmed in the LIWC website) are not good for short texts like headlines. When applying VADER sentiment analysis to the headlines, the correlation is not statistically significant.
+
+This is of upmost importance given that the article "Negativity drives online news consumption (Robertson et al., 2023)" was published in Nature, has been peer reviewed, cited multiple times, and this outcome has been in news sites. We found peer reviewed validations of this research but they don't discuss the accuracy of LWIC to measure the negativity and positivity of the headlines.
+
+### 8. Prediction of Headline Success with Traditional NLP Techniques
+
+We conducted a rigorous benchmark using state-of-the-art Traditional NLP methods, testing various strategies to handle the extreme class imbalance (95% Losers vs. 5% Winners).
+
+#### 8.1. Key Findings
+1.  **Sensitivity to Class Weights:**
+    * When we applied a high class weight (~18.5), the model **over-predicted** winners (10,000+), sacrificing precision.
+    * When we reduced the weight (to 10), the model became **too conservative**, predicting almost zero winners (only 9).
+    * This "Swing" phenomenon proves that the model **cannot distinguish** true winners from losers; it merely biases its guessing strategy based on the weight.
+
+2.  **The "Random Guess" Baseline:**
+    * Across all experiments, the **ROC-AUC score remained stagnant near 0.5 (0.54)**.
+    * This quantitatively confirms that **headline success is NOT linearly correlated with surface-level linguistic features** (TF-IDF, sentiment, readability).
+
+#### 8.2. Strategic Implication for Phase 2
+
+**"Why do we need LLMs?"**
+This failure is our most important insight. It demonstrates that the "Curiosity Gap"—the psychological trigger that drives clicks—is a **semantic nuance** invisible to traditional statistical models.
+* **Traditional NLP:** Counts words (e.g., "Does 'video' appear?").
+* **Generative AI (LLM):** Understands intent (e.g., "Does this headline create a burning question in the reader's mind?").
+
+**Therefore, this benchmark provides the definitive data-driven justification for our team's transition to GPT-based approaches.**
+
+### 9. Prediction of Headline Success with Transformer-based Techniques
+
+In the notebook [7-predicting-headline-success-embedding.ipynb](7-predicting-headline-success-embedding.ipynb) we used embeddings to predict the success of a headline.
+
+The process compared two minimal embedding models:
+- All-MiniLM-L6-v2
+- BAAI/bge-base-en-v1.5
+
+The results were:
+- All-MiniLM-L6-v2: 60% accuracy
+- BAAI/bge-base-en-v1.5: 63% accuracy
+
+The embedding obtained for each headline were transformed into a difference vector and this vector was used to train a Linear Regression and a Neural Network. The difference between those two models was minimal.
+
+From the experiments we can conclude that even simple embedding models provide a better result than traditional NLP techniques, and the embedding technique as well as the model is more important in the result than the machine learning model used.
