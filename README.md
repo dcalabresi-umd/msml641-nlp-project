@@ -11,22 +11,34 @@ Repository for the MSML 641 Natural Language Processing course Project - Fall 20
   - [1.2. About Upworthy](#12-about-upworthy)
 - [2. Literature Review](#2-literature-review)
   - [2.1. Nate Matias Meta Analysis (2020)](#21-nate-matias-meta-analysis-2020)
-  - [2.2. Negativity drives online news consumption (2023)](#22-negativity-drives-online-news-consumption-2023)
-  - [2.3. Linguistic effects on news headline success: Evidence from thousands of online field experiments (2023)](#23-linguistic-effects-on-news-headline-success-evidence-from-thousands-of-online-field-experiments-2023)
-  - [2.4. Reading dies in complexity: Online news consumers prefer simple writing](#24-reading-dies-in-complexity-online-news-consumers-prefer-simple-writing)
+  - [2.2. Negativity drives online news consumption (Robertson et al., 2023)](#22-negativity-drives-online-news-consumption-robertson-et-al-2023)
+  - [2.3. Linguistic effects on news headline success: Evidence from thousands of online field experiments (Gligorić et al., 2023)](#23-linguistic-effects-on-news-headline-success-evidence-from-thousands-of-online-field-experiments-gligorić-et-al-2023)
+  - [2.4. Reading dies in complexity: Online news consumers prefer simple writing (H Shulman et al., 2024)](#24-reading-dies-in-complexity-online-news-consumers-prefer-simple-writing-h-shulman-et-al-2024)
   - [2.5. Replacing an A/B Test with GPT (2023)](#25-replacing-an-ab-test-with-gpt-2023)
-  - [2.6. Headline sentiment and topic effect on online user engagement (2021)](#26-headline-sentiment-and-topic-effect-on-online-user-engagement-2021)
-  - [2.7. Hypothesis Generation with Large Language Models (2024)](#27-hypothesis-generation-with-large-language-models-2024)
-  - [2.8. LOLA: LLM-Assisted Online Learning Algorithm (2024)](#28-lola-llm-assisted-online-learning-algorithm-2024)
-- [3. Exploratory Data Analysis](#3-exploratory-data-analysis)
-- [4. Feature Engineering](#4-feature-engineering)
+  - [2.6. Headline sentiment and topic effect on online user engagement (Ludwig Jonsson et al., 2021)](#26-headline-sentiment-and-topic-effect-on-online-user-engagement-ludwig-jonsson-et-al-2021)
+  - [2.7. LOLA: LLM-Assisted Online Learning Algorithm (2024)](#27-lola-llm-assisted-online-learning-algorithm-2024)
+- [3. Goals](#3-goals)
+- [4. Exploratory Data Analysis](#4-exploratory-data-analysis)
   - [4.1. Results](#41-results)
-- [5. Topic Modeling](#5-topic-modeling)
-  - [5.1. Results](#51-results)
-- [6. Analysis](#6-analysis)
-  - [6.1. CTR Prediction Models](#61-ctr-prediction-models)
-    - [6.1.1. Results](#611-results)
-  - [6.2. Literature Confirmation/Rejection](#62-literature-confirmationrejection)
+- [5. Feature Engineering](#5-feature-engineering)
+  - [5.1. Named-Entity Recognition](#51-named-entity-recognition)
+  - [5.2. POS-based and basic text features](#52-pos-based-and-basic-text-features)
+  - [5.3. Sentence style features](#53-sentence-style-features)
+  - [5.4. Curiosity and intensity features](#54-curiosity-and-intensity-features)
+  - [5.5. Sentiment Analysis](#55-sentiment-analysis)
+  - [5.6. Dataset related features](#56-dataset-related-features)
+  - [5.7. Readability features](#57-readability-features)
+  - [5.8. Specificity feature](#58-specificity-feature)
+- [6. Topic Modeling](#6-topic-modeling)
+  - [6.1. Results](#61-results)
+- [7. CTR Prediction with Traditional NLP Techniques](#71-ctr-prediction-with-traditional-nlp-techniques)
+  - [7.1. Results](#71-results)
+  - [7.2. Literature Confirmation/Rejection](#72-literature-confirmationrejection)
+  - [7.3. CTR Prediction per Topic](#73-ctr-prediction-per-topic)
+- [8. Headline Success Prediction with Traditional NLP Techniques](#8-headline-success-prediction-with-traditional-nlp-techniques)
+  - [8.1. Key Findings](#81-key-findings)
+  - [8.2. Strategic Implication for Phase 2](#82-strategic-implication-for-phase-2)
+- [9. Headline Success Prediction with Embedding-based Techniques](#9-headline-success-prediction-with-embedding-based-techniques)
 
 
 ## Students
@@ -460,7 +472,7 @@ Two published and peer-reviewed papers confirmed that a negative sentiment is as
 
 This is of upmost importance given that the article "Negativity drives online news consumption (Robertson et al., 2023)" was published in Nature, has been peer reviewed, cited multiple times, and this outcome has been in news sites. We found peer reviewed validations of this research but they don't discuss the accuracy of LWIC to measure the negativity and positivity of the headlines.
 
-### 8. Prediction of Headline Success with Traditional NLP Techniques
+### 8. Headline Success Prediction with Traditional NLP Techniques
 
 We conducted a rigorous benchmark using state-of-the-art Traditional NLP methods, testing various strategies to handle the extreme class imbalance (95% Losers vs. 5% Winners).
 
@@ -483,7 +495,7 @@ This failure is our most important insight. It demonstrates that the "Curiosity 
 
 **Therefore, this benchmark provides the definitive data-driven justification for our team's transition to GPT-based approaches.**
 
-### 9. Prediction of Headline Success with Transformer-based Techniques
+### 9. Headline Success Prediction with Embedding-based Techniques
 
 In the notebook [7-predicting-headline-success-embedding.ipynb](7-predicting-headline-success-embedding.ipynb) we used embeddings to predict the success of a headline.
 
